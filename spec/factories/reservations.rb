@@ -7,5 +7,6 @@ FactoryBot.define do
     refundDate { "2024-11-09" }
     carStatus { "MyString" }
     rate { nil }
+    status { nil }
   end
 end

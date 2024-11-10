@@ -4,17 +4,18 @@ class Reservation < ApplicationRecord
   belongs_to :vehicle
   belongs_to :rate
 
-  # Validaciones
+  
+
   validates :reservation_date, presence: true
   validates :refund_date, presence: true
   validate :refund_date_after_reservation_date
-  validate :vehicle_available_for_dates
-  
-  # Callbacks
-  after_create :update_vehicle_status
-  after_destroy :restore_vehicle_status
+  validate :check_vehicle_availability
 
+  
   private
+
+
+
 
   def refund_date_after_reservation_date
     return if reservation_date.blank? || refund_date.blank?
@@ -24,31 +25,16 @@ class Reservation < ApplicationRecord
     end
   end
 
-  def vehicle_available_for_dates
-    return if vehicle.nil? || reservation_date.blank? || refund_date.blank?
+  def check_vehicle_availability
+    return if vehicle.nil?
 
-    overlapping_reservations = Reservation.where(vehicle_id: vehicle_id)
-                                          .where.not(id: id) # Excluir la reservación actual en caso de updates
-                                          .where('(reservation_date <= ? AND refund_date >= ?) OR 
-                                                 (reservation_date <= ? AND refund_date >= ?) OR
-                                                 (reservation_date >= ? AND refund_date <= ?)',
-                                                 reservation_date, reservation_date,
-                                                 refund_date, refund_date,
-                                                 reservation_date, refund_date)
+    active_reservation = Reservation.where(vehicle_id: vehicle_id)
+                                 .where(status_reservation: 'in_reserved')
+                                 .where.not(id: id) 
+                                 .exists?
 
-    if overlapping_reservations.exists?
-      errors.add(:base, "El vehículo no está disponible para las fechas seleccionadas")
-    end
-  end
-
-  def update_vehicle_status
-    vehicle.update!(status: 'unavailable')
-  end
-
-  def restore_vehicle_status
-    # Solo restaurar el estado si no hay más reservaciones activas
-    unless vehicle.reservations.where('refund_date > ?', Date.today).exists?
-      vehicle.update!(status: 'available')
+    if active_reservation
+      errors.add(:base, "El vehículo tiene una reservación activa y no puede ser reservado")
     end
   end
 end
