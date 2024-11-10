@@ -1,51 +1,66 @@
-class InvoicesController < ApplicationController
-  before_action :set_invoice, only: %i[ show update destroy ]
+module Api
+  module V1
+    class InvoicesController < ApplicationController
+      before_action :set_invoice, only: %i[ show update destroy ]
 
-  # GET /invoices
-  def index
-    @invoices = Invoice.all
+      # GET /invoices
+      def index
+        @invoices = Invoice.all
+        render json: @invoices
+      end
 
-    render json: @invoices
-  end
+      # GET /invoices/1
+      def show
+        render json: @invoice
+      end
 
-  # GET /invoices/1
-  def show
-    render json: @invoice
-  end
+      # POST /invoices
+      def create
+        @invoice = Invoice.new(invoice_params)
+        
+        # Lógica para calcular el valor del tax
+        calculate_tax
 
-  # POST /invoices
-  def create
-    @invoice = Invoice.new(invoice_params)
+        if @invoice.save
+          render json: @invoice, status: :created
+        else
+          render json: @invoice.errors, status: :unprocessable_entity
+        end
+      end
 
-    if @invoice.save
-      render json: @invoice, status: :created, location: @invoice
-    else
-      render json: @invoice.errors, status: :unprocessable_entity
+      # PATCH/PUT /invoices/1
+      def update
+        if @invoice.update(invoice_params)
+          render json: @invoice
+        else
+          render json: @invoice.errors, status: :unprocessable_entity
+        end
+      end
+
+      # DELETE /invoices/1
+      def destroy
+        @invoice.destroy!
+      end
+
+      private
+        def set_invoice
+          @invoice = Invoice.find(params[:id])
+        end
+
+        def invoice_params
+          params.require(:invoice).permit(:reservation_id, :payment_type_id)
+        end
+
+        def calculate_tax
+          reservation = Reservation.find(@invoice.reservation_id)
+          rate = reservation.rate 
+          
+          start_date = reservation.reservation_date
+          end_date = reservation.refund_date
+          days_diff = (end_date - start_date).to_i
+
+          @invoice.tax = days_diff * rate.value_per_day
+        end
     end
   end
-
-  # PATCH/PUT /invoices/1
-  def update
-    if @invoice.update(invoice_params)
-      render json: @invoice
-    else
-      render json: @invoice.errors, status: :unprocessable_entity
-    end
-  end
-
-  # DELETE /invoices/1
-  def destroy
-    @invoice.destroy!
-  end
-
-  private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_invoice
-      @invoice = Invoice.find(params[:id])
-    end
-
-    # Only allow a list of trusted parameters through.
-    def invoice_params
-      params.require(:invoice).permit(:reservation_id, :paymenttype_id, :tax)
-    end
 end

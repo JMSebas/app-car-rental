@@ -2,13 +2,12 @@ module Api
   module V1
     class VehiclesController < ApplicationController
       before_action :set_vehicle, only: [:show, :update, :destroy]
-      # before_action :authenticate_user! # Si usas autenticación con Devise
       # GET /api/v1/vehicles
       def index
         @vehicles = filter_vehicles
         render json: @vehicles
       end
-      
+
       def available
         @available_vehicles = Vehicle.available
         render json: @available_vehicles
@@ -54,7 +53,7 @@ module Api
           :model, 
           :license_plate, 
           :year, 
-          :vehicle_type, # Cambiado de :type porque type es una palabra reservada
+          :vehicle_type, 
           :status, 
           :daily_rate
         )

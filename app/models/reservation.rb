@@ -14,9 +14,6 @@ class Reservation < ApplicationRecord
   
   private
 
-
-
-
   def refund_date_after_reservation_date
     return if reservation_date.blank? || refund_date.blank?
 
