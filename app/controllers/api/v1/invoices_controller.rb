@@ -1,45 +1,66 @@
-class InvoicesController < ApplicationController
-    before_action :set_invoice, only: %i[show update destroy]
-  
-    def index
-      @invoices = Invoice.all
-      render json: @invoices
-    end
-  
-    def show
-      render json: @invoice
-    end
-  
-    def create
-      @invoice = Invoice.new(invoice_params)
-      if @invoice.save
-        render json: @invoice, status: :created
-      else
-        render json: @invoice.errors, status: :unprocessable_entity
+module Api
+  module V1
+    class InvoicesController < ApplicationController
+      before_action :set_invoice, only: %i[ show update destroy ]
+
+      # GET /invoices
+      def index
+        @invoices = Invoice.all
+        render json: @invoices
       end
-    end
-  
-    def update
-      if @invoice.update(invoice_params)
+
+      # GET /invoices/1
+      def show
         render json: @invoice
-      else
-        render json: @invoice.errors, status: :unprocessable_entity
       end
-    end
-  
-    def destroy
-      @invoice.destroy
-      head :no_content
-    end
-  
-    private
-  
-    def set_invoice
-      @invoice = Invoice.find(params[:id])
-    end
-  
-    def invoice_params
-      params.require(:invoice).permit(:rental_id, :total_amount, :issue_date, :due_date, :status)
+
+      # POST /invoices
+      def create
+        @invoice = Invoice.new(invoice_params)
+        
+        # Lógica para calcular el valor del tax
+        calculate_tax
+
+        if @invoice.save
+          render json: @invoice, status: :created
+        else
+          render json: @invoice.errors, status: :unprocessable_entity
+        end
+      end
+
+      # PATCH/PUT /invoices/1
+      def update
+        if @invoice.update(invoice_params)
+          render json: @invoice
+        else
+          render json: @invoice.errors, status: :unprocessable_entity
+        end
+      end
+
+      # DELETE /invoices/1
+      def destroy
+        @invoice.destroy!
+      end
+
+      private
+        def set_invoice
+          @invoice = Invoice.find(params[:id])
+        end
+
+        def invoice_params
+          params.require(:invoice).permit(:reservation_id, :payment_type_id)
+        end
+
+        def calculate_tax
+          reservation = Reservation.find(@invoice.reservation_id)
+          rate = reservation.rate 
+          
+          start_date = reservation.reservation_date
+          end_date = reservation.refund_date
+          days_diff = (end_date - start_date).to_i
+
+          @invoice.tax = days_diff * rate.value_per_day
+        end
     end
   end
-  
+end

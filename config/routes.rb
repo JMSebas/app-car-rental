@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  
   devise_for :users, controllers: {
     sessions: 'users/sessions',
     registrations: 'users/registrations',
@@ -7,21 +8,22 @@ Rails.application.routes.draw do
 
   namespace :api do 
     namespace :v1 do 
-
-        resources :damages
-        resources :invoices
-        resources :maintenances
-        resources :payments
-        resources :rentals
-        resources :reservations
-        resources :vehicles
-
+      resources :users
+      resources :invoices
+      resources :clients
+      resources :payment_types
+      resources :reservations do
+        patch 'set_completed', on: :member
+      end
+      resources :reparations
+      resources :rates
+      resources :vehicles do
+        get :available, on: :collection
+      end
     end
   end
 
   # get '/api-docs' => 'swagger_ui#index' # Esta línea sirve la documentación de Swagger
 
   # get "up" => "rails/health#show", as: :rails_health_check
-
-  
 end
