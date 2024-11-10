@@ -26,6 +26,7 @@ module Api
                           status: :unprocessable_entity
         end
       
+        
         @reservation = Reservation.new(reservation_params)
         @reservation.status_reservation = "in_reserved"
       
@@ -87,7 +88,7 @@ module Api
       end
 
       def reservation_params
-        params.require(:reservation).permit(:user_id, :client_id, :vehicle_id, :reservation_date, :refund_date, :car_status, :rate_id)
+        params.require(:reservation).permit(:user_id,  :vehicle_id, :reservation_date, :refund_date)
       end
     end
   end

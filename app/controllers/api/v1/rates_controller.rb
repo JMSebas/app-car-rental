@@ -47,7 +47,7 @@ module Api
 
         # Only allow a list of trusted parameters through.
         def rate_params
-          params.require(:rate).permit(:car_type, :value_per_day)
+          params.require(:rate).permit(:car_type, :value_per_day, :season_id)
         end
     end
   end

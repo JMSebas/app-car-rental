@@ -7,7 +7,7 @@ class Users::RegistrationsController < Devise::RegistrationsController
   private
 
   def configure_permitted_parameters
-    devise_parameter_sanitizer.permit(:sign_up, keys: [:name, :lastname, :address, :phone, :birthdate, :username, :email, :password])
+    devise_parameter_sanitizer.permit(:sign_up, keys: [:name, :lastname, :address, :phone, :birthdate, :username, :email, :password, :role])
     # Si necesitas permitir más parámetros para la actualización de la cuenta, descomenta la siguiente línea
     # devise_parameter_sanitizer.permit(:account_update, keys: [:name, :lastname, :address, :phone, :birthdate, :username])
   end

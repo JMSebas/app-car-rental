@@ -48,15 +48,15 @@ module Api
         end
 
         def invoice_params
-          params.require(:invoice).permit(:reservation_id, :payment_type_id)
+          params.require(:invoice).permit(:rental_id, :payment_type_id, :payment_day, :actual_payment_day)
         end
 
         def calculate_tax
-          reservation = Reservation.find(@invoice.reservation_id)
-          rate = reservation.rate 
+          rental = Rental.find(@invoice.rental_id)
+          rate = rental.rate 
           
-          start_date = reservation.reservation_date
-          end_date = reservation.refund_date
+          start_date = rental.actual_reservation_date
+          end_date = rental.actual_refund_date
           days_diff = (end_date - start_date).to_i
 
           @invoice.tax = days_diff * rate.value_per_day
