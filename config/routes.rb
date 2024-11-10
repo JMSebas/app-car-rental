@@ -1,5 +1,6 @@
 Rails.application.routes.draw do
   
+  
   devise_for :users, controllers: {
     sessions: 'users/sessions',
     registrations: 'users/registrations',
@@ -10,13 +11,15 @@ Rails.application.routes.draw do
     namespace :v1 do 
       resources :users
       resources :invoices
-      resources :clients
       resources :payment_types
+      resources :reparations
+      resources :rates
+      resources :rentals
+      resources :seasons
       resources :reservations do
         patch 'set_completed', on: :member
       end
-      resources :reparations
-      resources :rates
+      
       resources :vehicles do
         get :available, on: :collection
       end

@@ -16,6 +16,11 @@ class User < ApplicationRecord
          validates :email, presence: true, uniqueness: true
          validates :password, presence: true, length: { minimum: 6 }
 
+
+         enum role: {client: 0, administrador: 1, employee: 2}
+         has_many :reservations
+         has_many :rentals
+
   def jwt_payload
     super
   end

@@ -9,9 +9,9 @@ class Vehicle < ApplicationRecord
     def available_for_dates?(start_date, end_date)
       return false unless available?
       
-      !reservations.where('(reservationDate <= ? AND refundDate >= ?) OR 
-                          (reservationDate <= ? AND refundDate >= ?) OR
-                          (reservationDate >= ? AND refundDate <= ?)',
+      !reservations.where('(reservation_date <= ? AND refund_date >= ?) OR 
+                          (reservation_date <= ? AND refund_date >= ?) OR
+                          (reservation_date >= ? AND refund_date <= ?)',
                           start_date, start_date,
                           end_date, end_date,
                           start_date, end_date).exists?
