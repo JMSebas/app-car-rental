@@ -20,7 +20,7 @@ class RentalsController < ApplicationController
     @rental = Rental.new(rental_params)
 
     if @rental.save
-      render json: @rental, status: :created, location: @rental
+      render json: @rental, status: :created
     else
       render json: @rental.errors, status: :unprocessable_entity
     end

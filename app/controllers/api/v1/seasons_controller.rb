@@ -20,7 +20,7 @@ class SeasonsController < ApplicationController
     @season = Season.new(season_params)
 
     if @season.save
-      render json: @season, status: :created, location: @season
+      render json: @season, status: :created
     else
       render json: @season.errors, status: :unprocessable_entity
     end
