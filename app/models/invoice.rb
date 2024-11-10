@@ -1,3 +1,4 @@
 class Invoice < ApplicationRecord
-  belongs_to :rental
+  belongs_to :reservation
+  belongs_to :payment_type
 end
