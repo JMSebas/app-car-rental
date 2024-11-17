@@ -17,10 +17,7 @@ module Api
       # POST /invoices
       def create
         @invoice = Invoice.new(invoice_params)
-        
-        # Lógica para calcular el valor del tax
-        calculate_tax
-
+      
         if @invoice.save
           render json: @invoice, status: :created
         else
@@ -51,16 +48,7 @@ module Api
           params.require(:invoice).permit(:rental_id, :payment_type_id, :payment_day, :actual_payment_day)
         end
 
-        def calculate_tax
-          rental = Rental.find(@invoice.rental_id)
-          rate = rental.rate 
-          
-          start_date = rental.actual_reservation_date
-          end_date = rental.actual_refund_date
-          days_diff = (end_date - start_date).to_i
-
-          @invoice.tax = days_diff * rate.value_per_day
-        end
+      
     end
   end
 end

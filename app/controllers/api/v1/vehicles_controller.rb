@@ -12,13 +12,15 @@ module Api
         @available_vehicles = Vehicle.available
         render json: @available_vehicles
       end
+
       # GET /api/v1/vehicles/1
       def show
         render json: @vehicle
       end
+
       # POST /api/v1/vehicles
       def create
-        @vehicle = Vehicle.new(vehicle_params)
+        @vehicle = Vehicle.new(vehicle_params.merge(status: :available))
         
         if @vehicle.save
           render json: @vehicle, status: :created
@@ -38,15 +40,17 @@ module Api
       end
       # DELETE /api/v1/vehicles/1
       def destroy
-        @vehicle.destroy
-        head :no_content
+       render json: @vehicle.destroy
+        
       end
+
       private
       def set_vehicle
         @vehicle = Vehicle.find(params[:id])
       rescue ActiveRecord::RecordNotFound
         render json: { error: 'Vehículo no encontrado' }, status: :not_found
       end
+
       def vehicle_params
         params.require(:vehicle).permit(
           :brand, 
@@ -54,10 +58,11 @@ module Api
           :license_plate, 
           :year, 
           :vehicle_type, 
-          :status, 
+          :status,
           :daily_rate
         )
       end
+
       def filter_vehicles
         vehicles = Vehicle.all
         vehicles = vehicles.where(brand: params[:brands]) if params[:brands].present?
