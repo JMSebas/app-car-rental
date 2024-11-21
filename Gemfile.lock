@@ -341,6 +341,7 @@ DEPENDENCIES
   rack-cors
   rails (~> 7.2.1)
   rspec-rails
+  rubocop
   rubocop-rails-omakase
   selenium-webdriver
   shoulda-matchers

@@ -1,5 +1,121 @@
-# Omakase Ruby styling for Rails
-inherit_gem: { rubocop-rails-omakase: rubocop.yml }
+inherit_from: .rubocop_todo.yml
+
+# Usar el estilo "Omakase" de RuboCop para Rails
+inherit_gem:
+  rubocop-rails-omakase: rubocop.yml
+
+# Configuración personalizada para el proyecto
+AllCops:
+  TargetRubyVersion: 3.0 # Ajusta a la versión de Ruby que estés usando
+  Exclude:
+    - 'db/schema.rb'
+    - 'bin/**/*'
+    - 'node_modules/**/*'
+    - 'vendor/**/*'
+
+# Reglas de Estilo para Arreglos, Hashes y Bloques
+Layout/SpaceInsideArrayLiteralBrackets:
+  EnforcedStyle: space
+  Description: "Usa un espacio entre los corchetes y el contenido del array."
+
+Layout/SpaceAroundOperators:
+  Enabled: true
+  Description: "Debe haber un espacio alrededor de los operadores (por ejemplo, `+`, `-`, `=`)."
+
+Style/TrailingCommaInArrayLiteral:
+  EnforcedStyleForMultiline: consistent_comma
+  Description: "Usa una coma final consistente en literales de arrays multilineales."
+
+
+# Otras Reglas de Estilo
+# que se aplican a todo el código
+
+  Style/TrailingCommaInHashLiteral:
+  EnforcedStyleForMultiline: consistent_comma
+  Description: "Usa una coma final consistente en literales de hash multilineales."
+
+# Longitud de Métodos y Líneas
+Layout/LineLength: # Corregido el namespace
+  Max: 100
+  Description: "Líneas de código no deben superar los 100 caracteres."
+  Exclude:
+    - 'db/migrate/**/*'
+
+Metrics/MethodLength:
+  Max: 10
+  Description: "Mantén los métodos cortos y concisos (máximo 10 líneas de código)."
+
+Metrics/ClassLength:
+  Max: 200
+  Description: "Mantén las clases por debajo de las 200 líneas de código."
+
+# Reglas de Sintaxis y Estilo
+Style/StringLiterals:
+  EnforcedStyle: double_quotes
+  Description: "Usa comillas dobles para cadenas de texto, a menos que una cadena literal contenga comillas dobles."
+
+Style/FrozenStringLiteralComment:
+  Enabled: true
+  Description: "Agrega `# frozen_string_literal: true` al principio de cada archivo para mejorar el rendimiento."
+
+Style/Documentation:
+  Enabled: true
+  Description: "Cada clase debe tener un comentario de documentación."
+
+# Reglas de Estilo para Códigos de Rails
+Rails/SkipsModelValidations:
+  Enabled: true
+  Description: "Evita saltarte validaciones del modelo como `update_all` y `increment!`."
+
+Rails/SaveBang:
+  Enabled: true
+  Description: "Usa métodos de guardado con `!` (como `save!`) para manejar errores correctamente."
+
+Rails/TimeZone:
+  Enabled: true
+  Description: "Usa `Time.zone.now` en lugar de `Time.now` para manejar zonas horarias correctamente."
+
+Rails/OutputSafety:
+  Enabled: true
+  Description: "Evita el uso de `html_safe` para prevenir vulnerabilidades XSS."
+
+# Reglas para el Uso de Hashes y Parámetros
+Style/HashSyntax:
+  EnforcedStyle: ruby19
+  Description: "Usa la nueva sintaxis de hash (`key: value`) en lugar de `:key => value`."
+
+Lint/AmbiguousBlockAssociation:
+  Enabled: true
+  Description: "Evita asociaciones ambiguas de bloques, usa paréntesis para mayor claridad."
+
+Lint/UnusedBlockArgument:
+  Enabled: true
+  Description: "Elimina argumentos de bloque no utilizados para mantener el código limpio."
+
+# Validaciones y Callbacks en Rails
+Rails/Delegate:
+  Enabled: true
+  Description: "Usa `delegate` para simplificar delegaciones de métodos."
+
+Rails/HasManyOrHasOneDependent:
+  Enabled: true
+  Description: "Especifica opciones `dependent` para asociaciones `has_many` o `has_one`."
+
+# Otras Buenas Prácticas
+Style/GuardClause:
+  Enabled: true
+  Description: "Usa cláusulas de guardia (`return if condition`) para mejorar la legibilidad."
+
+Style/RedundantSelf:
+  Enabled: true
+  Description: "Elimina el uso redundante de `self` cuando no es necesario."
+
+Style/CommentAnnotation:
+  Keywords:
+    - TODO
+    - FIXME
+    - OPTIMIZE
+  Description: "Usa palabras clave `TODO`, `FIXME` y `OPTIMIZE` para marcar anotaciones en el código."
 
 # Overwrite or add rules to create your own house style
 #
