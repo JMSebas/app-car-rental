@@ -2,19 +2,19 @@ module Api
   module V1
     class InvoicesController < ApplicationController
       before_action :set_invoice, only: %i[ show update destroy ]
-
-      # GET /invoices
+      load_and_authorize_resource
+    
       def index
         @invoices = Invoice.all
         render json: @invoices
       end
 
-      # GET /invoices/1
+      
       def show
         render json: @invoice
       end
 
-      # POST /invoices
+     
       def create
         @invoice = Invoice.new(invoice_params)
       
@@ -25,7 +25,7 @@ module Api
         end
       end
 
-      # PATCH/PUT /invoices/1
+     
       def update
         if @invoice.update(invoice_params)
           render json: @invoice
@@ -34,7 +34,7 @@ module Api
         end
       end
 
-      # DELETE /invoices/1
+   
       def destroy
         @invoice.destroy!
       end

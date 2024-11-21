@@ -2,21 +2,21 @@ module Api
   module V1
 class RentalsController < ApplicationController
   before_action :set_rental, only: %i[ show update destroy ]
-  
+  load_and_authorize_resource
 
-  # GET /rentals
+
   def index
     @rentals = Rental.all
 
     render json: @rentals
   end
 
-  # GET /rentals/1
+  
   def show
     render json: @rental
   end
 
-  # POST /rentals
+  
   def create
     @rental = Rental.new(rental_params)
 
@@ -27,7 +27,7 @@ class RentalsController < ApplicationController
     end
   end
 
-  # PATCH/PUT /rentals/1
+
   def update
     if @rental.update(rental_params)
       render json: @rental
@@ -36,18 +36,17 @@ class RentalsController < ApplicationController
     end
   end
 
-  # DELETE /rentals/1
+
   def destroy
     @rental.destroy!
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
+
     def set_rental
       @rental = Rental.find(params[:id])
     end
 
-    # Only allow a list of trusted parameters through.
     def rental_params
       params.require(:rental).permit(:user_id, :reservation_id, :actual_reservation_date, :expected_refund_date, :actual_refund_date, :car_status, :initial_odometer, :final_odometer, :rate_id)
     end

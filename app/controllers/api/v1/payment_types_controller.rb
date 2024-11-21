@@ -2,21 +2,21 @@ module Api
     module V1
         class PaymentTypesController < ApplicationController
             before_action :set_payment_type, only: %i[ show update destroy ]
-        
+            load_and_authorize_resource
 
-            # GET /payment_types
+           
             def index
             @payment_types = PaymentType.all
         
             render json: @payment_types
             end
         
-            # GET /payment_types/1
+        
             def show
             render json: @payment_type
             end
         
-            # POST /payment_types
+           
             def create
             @payment_type = PaymentType.new(payment_type_params)
         
@@ -27,7 +27,7 @@ module Api
             end
             end
         
-            # PATCH/PUT /payment_types/1
+           
             def update
             if @payment_type.update(payment_type_params)
                 render json: @payment_type
@@ -36,7 +36,7 @@ module Api
             end
             end
         
-            # DELETE /payment_types/1
+          
             def destroy
             @payment_type.destroy!
             end

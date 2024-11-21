@@ -46,6 +46,9 @@ gem 'letter_opener'
 gem 'swagger-blocks'
 gem 'cancancan'
 gem 'faker'
+gem 'sendgrid-ruby'
+
+gem 'dotenv-rails', groups: [:development, :test]
 
 group :test do 
   gem 'rspec-rails'

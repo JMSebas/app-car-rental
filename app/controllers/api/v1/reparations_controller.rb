@@ -3,20 +3,20 @@ module Api
     class ReparationsController < ApplicationController
       before_action :set_reparation, only: %i[show update destroy]
       before_action :set_vehicle, only: %i[create]
-   
+      load_and_authorize_resource
 
-      # GET /reparations
+     
       def index
         @reparations = Reparation.all
         render json: @reparations
       end
 
-      # GET /reparations/1
+   
       def show
         render json: @reparation
       end
 
-      # POST /reparations
+     
       def create
         if @vehicle.status == 'reserved'
           render json: { error: 'El vehículo está reservado y no puede ser puesto en reparación' }, status: :unprocessable_entity
@@ -33,7 +33,7 @@ module Api
         end
       end
 
-      # PATCH/PUT /reparations/1
+   
       def update
         if @reparation.update(reparation_params)
           render json: @reparation
@@ -42,7 +42,7 @@ module Api
         end
       end
 
-      # DELETE /reparations/1
+    
       def destroy
         render json: @reparation.vehicle.update(status: 'available') if @reparation.destroy
         

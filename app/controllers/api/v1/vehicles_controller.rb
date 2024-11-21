@@ -2,8 +2,9 @@ module Api
   module V1
     class VehiclesController < ApplicationController
       before_action :set_vehicle, only: [:show, :update, :destroy]
-
-      # GET /api/v1/vehicles
+      load_and_authorize_resource
+     
+      
       def index
         @vehicles = filter_vehicles
         render json: @vehicles
@@ -14,12 +15,11 @@ module Api
         render json: @available_vehicles
       end
 
-      # GET /api/v1/vehicles/1
+      
       def show
         render json: @vehicle
       end
 
-      # POST /api/v1/vehicles
       def create
         @vehicle = Vehicle.new(vehicle_params.merge(status: :available))
         
@@ -30,7 +30,7 @@ module Api
                  status: :unprocessable_entity
         end
       end
-      # PATCH/PUT /api/v1/vehicles/1
+
       def update
         if @vehicle.update(vehicle_params)
           render json: @vehicle
@@ -39,7 +39,7 @@ module Api
                  status: :unprocessable_entity
         end
       end
-      # DELETE /api/v1/vehicles/1
+
       def destroy
        render json: @vehicle.destroy
         
@@ -73,7 +73,7 @@ module Api
         if params[:min_price].present? && params[:max_price].present?
           vehicles = vehicles.where(daily_rate: params[:min_price]..params[:max_price])
         end
-        # Paginación (opcional, usando la gema 'kaminari' si la tienes instalada)
+
         vehicles = vehicles.page(params[:page]).per(params[:per_page]) if params[:page].present?
         vehicles
       end
