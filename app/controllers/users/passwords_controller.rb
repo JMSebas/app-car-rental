@@ -1,6 +1,7 @@
 # app/controllers/users/passwords_controller.rb
 class Users::PasswordsController < Devise::PasswordsController
     respond_to :json
+    
     #skip_before_action :verify_authenticity_token
     
     def create

@@ -7,7 +7,7 @@ class Ability
 
     return unless user.present?
 
-    if user.role == "admin"
+    if user.role == "administrador"
       can :manage, :all
     end 
 
