@@ -1,6 +1,12 @@
 require 'rails_helper'
 
 RSpec.describe "Vehicles API", type: :request do
+  let(:user) { create(:user) }
+
+  before do
+    sign_in user
+  end
+  
   # Datos iniciales para las pruebas
   let!(:vehicles) { create_list(:vehicle, 5) } # Crear 5 vehículos
   let(:vehicle_id) { vehicles.first.id } # ID del primer vehículo

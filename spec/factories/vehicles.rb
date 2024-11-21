@@ -2,7 +2,7 @@ FactoryBot.define do
     factory :vehicle do
       brand { "Toyota" }
       model { "Corolla" }
-      license_plate { "ABC123" }
+      sequence(:license_plate) { |n| "ABC#{n}123" }
       year { 2020 }
       vehicle_type { "Sedan" }
       status { 0 }
