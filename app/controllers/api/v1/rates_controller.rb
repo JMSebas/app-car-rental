@@ -2,6 +2,7 @@ module Api
   module V1
     class RatesController < ApplicationController
       before_action :set_rate, only: %i[ show update destroy ]
+      before_action :authenticate_user!
       load_and_authorize_resource
    
       def index

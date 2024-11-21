@@ -2,6 +2,7 @@ module Api
   module V1
     class ReservationsController < ApplicationController
       before_action :set_reservation, only: %i[show update destroy set_completed]
+      before_action :authenticate_user!
       load_and_authorize_resource
 
      
