@@ -2,9 +2,9 @@ module Api
   module V1
     class ReservationsController < ApplicationController
       before_action :set_reservation, only: %i[show update destroy set_completed]
-   
+      load_and_authorize_resource
 
-      # GET /reservations
+     
       def index
         @reservations = Reservation.all
         render json: @reservations
@@ -15,7 +15,7 @@ module Api
         render json: @reservations
       end 
 
-      # GET /reservations/1
+     
       def show
         render json: @reservation
       end
@@ -32,7 +32,6 @@ module Api
           end
       end
 
-      # PATCH/PUT /reservations/1
       def update
         if @reservation.status_reservation ==  "reserved" && @reservation.update(reservation_params)
           render json: @reservation
@@ -41,7 +40,7 @@ module Api
         end
       end
 
-     # DELETE /reservations/1
+     
       def destroy
           @reservation.destroy!
           @reservation.vehicle.update!(status: :available)
@@ -50,7 +49,7 @@ module Api
       end
 
 
-      # PATCH /reservations/1/set_completed
+   
       def set_completed
         if @reservation.status_reservation == "reserved"
           @reservation.update!(status_reservation: :completed)
