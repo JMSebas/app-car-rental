@@ -2,6 +2,7 @@ module Api
   module V1
     class VehiclesController < ApplicationController
       before_action :set_vehicle, only: [:show, :update, :destroy]
+
       # GET /api/v1/vehicles
       def index
         @vehicles = filter_vehicles
@@ -64,12 +65,11 @@ module Api
       end
 
       def filter_vehicles
-        vehicles = Vehicle.all
+        vehicles = Vehicle.all.available
         vehicles = vehicles.where(brand: params[:brands]) if params[:brands].present?
         vehicles = vehicles.where(model: params[:models]) if params[:models].present?
         vehicles = vehicles.where(year: params[:years]) if params[:years].present?
         vehicles = vehicles.where(vehicle_type: params[:types]) if params[:types].present?
-        vehicles = vehicles.where(status: params[:status]) if params[:status].present?
         if params[:min_price].present? && params[:max_price].present?
           vehicles = vehicles.where(daily_rate: params[:min_price]..params[:max_price])
         end

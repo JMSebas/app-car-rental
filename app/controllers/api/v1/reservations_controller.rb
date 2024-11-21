@@ -2,12 +2,18 @@ module Api
   module V1
     class ReservationsController < ApplicationController
       before_action :set_reservation, only: %i[show update destroy set_completed]
+   
 
       # GET /reservations
       def index
         @reservations = Reservation.all
         render json: @reservations
       end
+
+      def reservations_user
+        @reservations = @current_user.reservations 
+        render json: @reservations
+      end 
 
       # GET /reservations/1
       def show
@@ -55,6 +61,9 @@ module Api
                  status: :unprocessable_entity
         end
       end
+
+
+     
 
       private
 

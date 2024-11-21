@@ -17,7 +17,10 @@ Rails.application.routes.draw do
       resources :rentals
       resources :seasons
       resources :reservations do
-        patch 'set_completed', on: :member
+        collection do 
+        patch :set_completed
+        get :reservations_user
+        end
       end
       
       resources :vehicles do

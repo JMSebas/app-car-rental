@@ -3,6 +3,7 @@ module Api
         class PaymentTypesController < ApplicationController
             before_action :set_payment_type, only: %i[ show update destroy ]
         
+
             # GET /payment_types
             def index
             @payment_types = PaymentType.all

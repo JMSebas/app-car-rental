@@ -3,6 +3,7 @@ module Api
     class ReparationsController < ApplicationController
       before_action :set_reparation, only: %i[show update destroy]
       before_action :set_vehicle, only: %i[create]
+   
 
       # GET /reparations
       def index

@@ -14,7 +14,7 @@ class Reservation < ApplicationRecord
   enum status_reservation: { reserved: 0, cancelled: 1, completed: 2}
   
   private
-
+  
   def status_vehicle 
     status = vehicle.status
     if status != "available"

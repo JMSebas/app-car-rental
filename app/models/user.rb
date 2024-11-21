@@ -22,7 +22,13 @@ class User < ApplicationRecord
          has_many :rentals
 
   def jwt_payload
-    super
+    super.merge({
+      'email' => email,
+      'name' => name,
+      'lastname' => lastname,
+      'username' => username,
+      'role' => role
+    })
   end
 
 end

@@ -2,6 +2,7 @@ module Api
   module V1
 class SeasonsController < ApplicationController
   before_action :set_season, only: %i[ show update destroy ]
+  
 
   # GET /seasons
   def index

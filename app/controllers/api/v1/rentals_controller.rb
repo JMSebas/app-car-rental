@@ -2,6 +2,7 @@ module Api
   module V1
 class RentalsController < ApplicationController
   before_action :set_rental, only: %i[ show update destroy ]
+  
 
   # GET /rentals
   def index
