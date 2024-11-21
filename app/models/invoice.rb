@@ -7,6 +7,7 @@ class Invoice < ApplicationRecord
   validates :payment_day,
             :actual_payment_day,
             :payment_type_id, 
+            :rental_id,
             presence: true
 
   private 

@@ -31,7 +31,7 @@ Vehicle.destroy_all
     license_plate: Faker::Vehicle.license_plate,
     year: rand(2010..2024),
     vehicle_type: vehicle_types.sample,
-    status: 1,
+    status: 0,
     daily_rate: rand(30.0..250.0).round(2)
   )
 end
@@ -56,3 +56,61 @@ users_data.each do |user_data|
     role: user_data[:role]
   )
 end
+
+# Test Data 
+
+
+# payment_types = ['Credit Card', 'Cash', 'Bank Transfer']
+
+# payment_types.each do |payment_method|
+#   PaymentType.find_or_create_by!(payment_method: payment_method)
+# end
+
+
+# season1 = Season.find_or_create_by!(season: 'Summer', start_date: '2024-06-01', end_date: '2024-08-31')
+# season2 = Season.find_or_create_by!(season: 'Winter', start_date: '2024-12-01', end_date: '2025-02-28')
+
+# 10.times do
+#   Rate.create!(
+#     car_type: ['Sedan', 'SUV', 'Truck'].sample,
+#     value_per_day: rand(30.0..100.0).round(2),
+#     season_id: [season1.id, season2.id].sample
+#   )
+# end
+
+# 10.times do
+#   Reservation.create!(
+#     user_id: User.all.sample.id, 
+#     vehicle_id: Vehicle.all.sample.id, 
+#     reservation_date: Date.today, 
+#     refund_date: Date.today + rand(1..7).days,
+#     status_reservation: rand(0..2)
+#   )
+# end
+
+# 10.times do
+#   Rental.create!(
+#     user_id: User.all.sample.id,
+#     reservation_id: Reservation.all.sample.id,
+#     rate_id: Rate.all.sample.id,
+#     actual_reservation_date: Date.today,
+#     expected_refund_date: Date.today + rand(1..7).days,
+#     actual_refund_date: Date.today + rand(1..7).days,
+#     car_status: :good,
+#     car_status_end: :damaged,
+#     initial_odometer: rand(0..500),
+#     final_odometer: rand(500..1000)
+#   )
+# end
+
+# 10.times do
+#   Invoice.create!(
+#     rental_id: Rental.all.sample.id,
+#     payment_type_id: PaymentType.all.sample.id,
+#     tax: rand(5.0..50.0).round(2),
+#     payment_day: Date.today,
+#     actual_payment_day: Date.today
+#   )
+# end
+
+# puts "Seed data TEST created successfully!"
