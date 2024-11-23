@@ -9,6 +9,7 @@ class Users::PasswordsController < Devise::PasswordsController
       if successfully_sent?(resource)
         render json: {
           status: { 
+            # data: resource
             code: 200, 
             message: 'Reset password instructions have been sent to your email'
           }

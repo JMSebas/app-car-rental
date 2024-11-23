@@ -60,7 +60,8 @@ module Api
           :year, 
           :vehicle_type, 
           :status,
-          :daily_rate
+          :daily_rate,
+          :image
         )
       end
 
