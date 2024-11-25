@@ -27,7 +27,7 @@ module Api
         @reparation = Reparation.new(reparation_params)
 
         if @reparation.save
-          @vehicle.update(status: 'in_repair')
+          @vehicle.update(status: 4)
           render json: @reparation, status: :created
         else
           render json: @reparation.errors, status: :unprocessable_entity

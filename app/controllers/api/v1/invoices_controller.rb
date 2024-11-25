@@ -22,7 +22,7 @@ module Api
         if @invoice.save
           render json: @invoice, status: :created
         else
-          render json: @invoice.errors, status: :unprocessable_entity
+          render json: { errors: @invoice.errors.full_messages }, status: :unprocessable_entity
         end
       end
 

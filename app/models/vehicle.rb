@@ -17,7 +17,7 @@ class Vehicle < ApplicationRecord
     
    
   
-    enum status: { available: 0, unavailable: 1, reserved: 2, damaged: 3}
+    enum status: { available: 0, unavailable: 1, reserved: 2, damaged: 3, in_repair: 4}
     
    # Validaciones
    validates :brand, presence: true

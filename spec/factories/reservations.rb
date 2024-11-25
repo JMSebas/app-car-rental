@@ -1,12 +1,9 @@
 FactoryBot.define do
   factory :reservation do
     user { nil }
-    client { nil }
     vehicle { nil }
-    reservationDate { "2024-11-09" }
-    refundDate { "2024-11-09" }
-    carStatus { "MyString" }
-    rate { nil }
-    status { nil }
+    reservation_date {Date.today}
+    refund_date{ Date.today + rand(1..7).days}
+    status_reservation { nil }
   end
 end

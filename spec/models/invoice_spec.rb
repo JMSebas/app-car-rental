@@ -25,7 +25,8 @@ RSpec.describe Invoice, type: :model do
     year: 2020, 
     vehicle_type: 'Sedan', 
     status: 0, 
-    daily_rate: 50.0
+    daily_rate: 50.0,
+    image: 'https://example.com/image.jpg'
   )}
 
   # Crear una Reservation válida

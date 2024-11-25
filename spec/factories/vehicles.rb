@@ -7,6 +7,7 @@ FactoryBot.define do
       vehicle_type { "Sedan" }
       status { 0 }
       daily_rate { 50.0 }
+      image { "https://example.com/vehicle_image.jpg" }
     end
   end
   
