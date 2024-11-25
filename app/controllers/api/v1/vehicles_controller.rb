@@ -5,7 +5,7 @@ module Api
       load_and_authorize_resource
      
       
-      def index
+      def index 
         @vehicles = filter_vehicles
         render json: @vehicles
       end
@@ -60,7 +60,8 @@ module Api
           :year, 
           :vehicle_type, 
           :status,
-          :daily_rate
+          :daily_rate,
+          :image
         )
       end
 
@@ -73,7 +74,6 @@ module Api
         if params[:min_price].present? && params[:max_price].present?
           vehicles = vehicles.where(daily_rate: params[:min_price]..params[:max_price])
         end
-
         vehicles = vehicles.page(params[:page]).per(params[:per_page]) if params[:page].present?
         vehicles
       end

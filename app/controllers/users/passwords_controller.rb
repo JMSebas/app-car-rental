@@ -2,7 +2,6 @@
 class Users::PasswordsController < Devise::PasswordsController
     respond_to :json
     
-    #skip_before_action :verify_authenticity_token
     
     def create
       self.resource = resource_class.send_reset_password_instructions(resource_params)
@@ -10,6 +9,7 @@ class Users::PasswordsController < Devise::PasswordsController
       if successfully_sent?(resource)
         render json: {
           status: { 
+            # data: resource
             code: 200, 
             message: 'Reset password instructions have been sent to your email'
           }
