@@ -3,8 +3,8 @@ require 'rails_helper'
 
 RSpec.describe Reparation, type: :model do
   # Datos de prueba
-  let(:vehicle) { Vehicle.create!(brand: 'Toyota', model: 'Corolla', license_plate: 'ABC123', year: 2020, vehicle_type: 'Sedan', status: 0, daily_rate: 60.0) }
-
+  let(:vehicle) { create(:vehicle) }
+  
   # Validaciones
   context 'validations' do
     it 'should validate presence of vehicle_id' do

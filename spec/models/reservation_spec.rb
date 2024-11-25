@@ -14,15 +14,7 @@ RSpec.describe Reservation, type: :model do
     username: 'johndoe'
   )}
   
-  let(:vehicle) { Vehicle.create!( 
-    brand: 'Toyota', 
-    model: 'Corolla', 
-    license_plate: 'ABC123', 
-    year: 2020, 
-    vehicle_type: 'Sedan', 
-    status: 0, 
-    daily_rate: 50.0
-  )}
+  let(:vehicle) { create(:vehicle) }
   
   # Validaciones
   context 'validations' do

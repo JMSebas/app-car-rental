@@ -5,7 +5,7 @@ RSpec.describe Rental, type: :model do
   # Datos de prueba
   let(:season) { Season.create!(season: 'Summer', start_date: Date.today, end_date: Date.today + 3.months) }
   let(:user) { User.create!(email: 'user@example.com', password: 'password123', name: 'John', lastname: 'Doe', role: 0, address: 'Address', phone: '1234567890', birthdate: '1990-01-01', username: 'johndoe') }
-  let(:vehicle) { Vehicle.create!(brand: 'Toyota', model: 'Corolla', license_plate: 'ABC123', year: 2020, vehicle_type: 'Sedan', status: 0, daily_rate: 60.0) }
+  let(:vehicle) { create(:vehicle) }
   let(:reservation) { Reservation.create!(user_id: user.id, vehicle_id: vehicle.id, reservation_date: Date.today, refund_date: Date.today + 5.days) }
   let(:rate) { Rate.create!(car_type: 'Sedan', value_per_day: 50.0, season_id: season.id) }
   let(:payment_type) { PaymentType.create!(payment_method: 'Credit Card') }
