@@ -1,32 +1,32 @@
 class Rental < ApplicationRecord
-  belongs_to :user
+  before_create :add_dates
+
+  belongs_to :user,  optional: true
   belongs_to :reservation
   belongs_to :rate
 
   has_one :invoice
+  has_many :damages
   
-  validates :actual_reservation_date,
-            :expected_refund_date, 
-            :actual_refund_date,
+  validates :actual_refund_date,
             :initial_odometer,
             :final_odometer,
             presence: true
 
-  validates :user_id,
-            :reservation_id,
+  validates :reservation_id,
             :rate_id,
             numericality: {only_integer: true, message: "It should be an integer"},
             presence: true
-          
-# validates   :car_status_end, 
-#             inclusion: { in: Rental.car_status_ends.keys, message: "%{value} is invalid" },
-#             presence: true
-
-# validates   :car_status, 
-#             inclusion: { in: car_statuses.keys, message: "%{value} is invalid" },
-#             presence: true
 
 
   enum car_status: { good: 0 }
-  enum car_status_end: { damaged: 1 }
+
+  private 
+
+  def add_dates 
+    self.user_id = reservation.user_id
+    self.actual_reservation_date = reservation.reservation_date
+    self.expected_refund_date = reservation.refund_date
+
+  end 
 end

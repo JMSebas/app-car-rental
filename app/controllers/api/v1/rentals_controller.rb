@@ -14,7 +14,7 @@ class RentalsController < ApplicationController
 
   
   def show
-    render json: @rental
+    render json: RentalSerializer.new.serialize(@rental)
   end
 
   
@@ -30,12 +30,22 @@ class RentalsController < ApplicationController
 
 
   def update
-    if @rental.update(rental_params)
-      render json: @rental
+    if @rental.update(rental_params.except(:damages))
+      if params[:rental][:damages].present?
+        params[:rental][:damages].each do |damage|
+          # Crear nuevo damage asociado al rental actual
+          @rental.damages.create(
+            damage_type: damage[:damage_type],
+            value: damage[:value]
+          )
+        end
+      end
+      render json: @rental, status: :ok
     else
       render json: @rental.errors, status: :unprocessable_entity
     end
   end
+  
 
 
   def destroy
@@ -49,8 +59,30 @@ class RentalsController < ApplicationController
     end
 
     def rental_params
-      params.require(:rental).permit(:user_id, :reservation_id, :actual_reservation_date, :expected_refund_date, :actual_refund_date, :car_status, :initial_odometer, :final_odometer, :rate_id)
-    end
+      if action_name == 'create'
+        # Para crear: solo permitir los campos básicos del rental
+        params.require(:rental).permit(
+          :reservation_id, 
+          :actual_refund_date, 
+          :car_status, 
+          :initial_odometer, 
+          :final_odometer, 
+          :rate_id
+        )
+      else
+        # Para actualizar: permitir los campos básicos y el array de damages
+        params.require(:rental).permit(
+          :reservation_id, 
+          :actual_refund_date, 
+          :car_status, 
+          :initial_odometer, 
+          :final_odometer, 
+          :rate_id,
+          damages: [:damage_type, :value]
+        )
+      end
+    end    
+    
 end
 end
 end

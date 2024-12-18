@@ -10,9 +10,18 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2024_12_16_002413) do
+ActiveRecord::Schema[7.2].define(version: 2024_12_18_202336) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "damages", force: :cascade do |t|
+    t.string "damage_type"
+    t.decimal "value"
+    t.bigint "rental_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["rental_id"], name: "index_damages_on_rental_id"
+  end
 
   create_table "invoices", force: :cascade do |t|
     t.bigint "payment_type_id", null: false
@@ -22,6 +31,8 @@ ActiveRecord::Schema[7.2].define(version: 2024_12_16_002413) do
     t.bigint "rental_id", null: false
     t.date "payment_day"
     t.date "actual_payment_day"
+    t.decimal "amountxDamaged"
+    t.decimal "totalAmount"
     t.index ["payment_type_id"], name: "index_invoices_on_payment_type_id"
     t.index ["rental_id"], name: "index_invoices_on_rental_id"
   end
@@ -53,7 +64,6 @@ ActiveRecord::Schema[7.2].define(version: 2024_12_16_002413) do
     t.bigint "rate_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.integer "car_status_end"
     t.index ["rate_id"], name: "index_rentals_on_rate_id"
     t.index ["reservation_id"], name: "index_rentals_on_reservation_id"
     t.index ["user_id"], name: "index_rentals_on_user_id"
@@ -126,6 +136,7 @@ ActiveRecord::Schema[7.2].define(version: 2024_12_16_002413) do
     t.integer "storage"
   end
 
+  add_foreign_key "damages", "rentals"
   add_foreign_key "invoices", "payment_types"
   add_foreign_key "invoices", "rentals"
   add_foreign_key "rates", "seasons"

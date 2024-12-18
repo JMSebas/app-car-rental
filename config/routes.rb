@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  resources :damages
   
   
   devise_for :users, controllers: {
