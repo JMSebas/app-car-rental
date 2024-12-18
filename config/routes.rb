@@ -22,13 +22,14 @@ Rails.application.routes.draw do
       resources :rentals do
         collection do 
           get :rentals_user
+          patch :set_completed
         end 
 
       end 
       resources :seasons
       resources :reservations do
         collection do 
-        patch :set_completed
+        patch :set_cancelled
         get :reservations_user
         end
       end
