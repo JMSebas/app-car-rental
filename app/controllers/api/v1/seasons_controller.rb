@@ -1,0 +1,56 @@
+module Api
+  module V1
+class SeasonsController < ApplicationController
+  before_action :set_season, only: %i[ show update destroy ]
+  before_action :authenticate_user!
+  load_and_authorize_resource
+
+ 
+  def index
+    @seasons = Season.all
+
+    render json: @seasons
+  end
+
+
+  def show
+    render json: @season
+  end
+
+  def create
+    @season = Season.new(season_params)
+
+    if @season.save
+      render json: @season, status: :created
+    else
+      render json: @season.errors, status: :unprocessable_entity
+    end
+  end
+
+  
+  def update
+    if @season.update(season_params)
+      render json: @season
+    else
+      render json: @season.errors, status: :unprocessable_entity
+    end
+  end
+
+ 
+  def destroy
+    @season.destroy!
+  end
+
+  private
+
+    def set_season
+      @season = Season.find(params[:id])
+    end
+
+
+    def season_params
+      params.require(:season).permit(:season, :start_date, :end_date)
+    end
+end
+end
+end

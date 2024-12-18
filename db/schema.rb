@@ -10,80 +10,92 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2024_10_28_181743) do
+ActiveRecord::Schema[7.2].define(version: 2024_12_18_202336) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
   create_table "damages", force: :cascade do |t|
+    t.string "damage_type"
+    t.decimal "value"
     t.bigint "rental_id", null: false
-    t.text "description"
-    t.decimal "repair_cost"
-    t.string "status"
-    t.datetime "report_date"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["rental_id"], name: "index_damages_on_rental_id"
   end
 
   create_table "invoices", force: :cascade do |t|
-    t.bigint "rental_id", null: false
-    t.decimal "total_amount"
-    t.datetime "issue_date"
-    t.date "due_date"
-    t.string "status"
+    t.bigint "payment_type_id", null: false
+    t.decimal "tax"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "rental_id", null: false
+    t.date "payment_day"
+    t.date "actual_payment_day"
+    t.decimal "amountxDamaged"
+    t.decimal "totalAmount"
+    t.index ["payment_type_id"], name: "index_invoices_on_payment_type_id"
     t.index ["rental_id"], name: "index_invoices_on_rental_id"
   end
 
-  create_table "maintenances", force: :cascade do |t|
-    t.bigint "vehicle_id", null: false
-    t.date "start_date"
-    t.date "end_date"
-    t.text "description"
-    t.decimal "cost"
-    t.string "status"
+  create_table "payment_types", force: :cascade do |t|
+    t.string "payment_method"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["vehicle_id"], name: "index_maintenances_on_vehicle_id"
   end
 
-  create_table "payments", force: :cascade do |t|
-    t.bigint "rental_id", null: false
-    t.decimal "amount"
-    t.date "payment_date"
-    t.string "payment_method"
-    t.string "status"
+  create_table "rates", force: :cascade do |t|
+    t.string "car_type"
+    t.decimal "value_per_day"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["rental_id"], name: "index_payments_on_rental_id"
+    t.bigint "season_id", null: false
+    t.index ["season_id"], name: "index_rates_on_season_id"
   end
 
   create_table "rentals", force: :cascade do |t|
-    t.bigint "reservation_id", null: false
     t.bigint "user_id", null: false
-    t.datetime "actual_start_date"
-    t.datetime "expected_return_date"
-    t.datetime "actual_return_date"
-    t.integer "initial_odometer"
-    t.integer "final_odometer"
-    t.string "status"
+    t.bigint "reservation_id", null: false
+    t.date "actual_reservation_date"
+    t.date "expected_refund_date"
+    t.date "actual_refund_date"
+    t.integer "car_status"
+    t.decimal "initial_odometer"
+    t.decimal "final_odometer"
+    t.bigint "rate_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["rate_id"], name: "index_rentals_on_rate_id"
     t.index ["reservation_id"], name: "index_rentals_on_reservation_id"
     t.index ["user_id"], name: "index_rentals_on_user_id"
+  end
+
+  create_table "reparations", force: :cascade do |t|
+    t.bigint "vehicle_id", null: false
+    t.date "entry_day"
+    t.date "exit_day"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["vehicle_id"], name: "index_reparations_on_vehicle_id"
   end
 
   create_table "reservations", force: :cascade do |t|
     t.bigint "user_id", null: false
     t.bigint "vehicle_id", null: false
-    t.date "start_date"
-    t.date "end_date"
-    t.string "status"
+    t.date "reservation_date"
+    t.date "refund_date"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "status_reservation", default: 0
     t.index ["user_id"], name: "index_reservations_on_user_id"
     t.index ["vehicle_id"], name: "index_reservations_on_vehicle_id"
+  end
+
+  create_table "seasons", force: :cascade do |t|
+    t.string "season"
+    t.date "start_date"
+    t.date "end_date"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "users", force: :cascade do |t|
@@ -101,6 +113,7 @@ ActiveRecord::Schema[7.2].define(version: 2024_10_28_181743) do
     t.string "phone"
     t.date "birthdate"
     t.string "username"
+    t.integer "role", default: 0, null: false
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["jti"], name: "index_users_on_jti", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
@@ -111,19 +124,26 @@ ActiveRecord::Schema[7.2].define(version: 2024_10_28_181743) do
     t.string "model"
     t.string "license_plate"
     t.integer "year"
-    t.string "type"
-    t.string "status"
+    t.string "vehicle_type"
+    t.integer "status"
     t.decimal "daily_rate"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "image"
+    t.string "motor"
+    t.integer "door_count"
+    t.string "chasis"
+    t.integer "storage"
   end
 
   add_foreign_key "damages", "rentals"
+  add_foreign_key "invoices", "payment_types"
   add_foreign_key "invoices", "rentals"
-  add_foreign_key "maintenances", "vehicles"
-  add_foreign_key "payments", "rentals"
+  add_foreign_key "rates", "seasons"
+  add_foreign_key "rentals", "rates"
   add_foreign_key "rentals", "reservations"
   add_foreign_key "rentals", "users"
+  add_foreign_key "reparations", "vehicles"
   add_foreign_key "reservations", "users"
   add_foreign_key "reservations", "vehicles"
 end

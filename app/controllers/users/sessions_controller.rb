@@ -2,38 +2,54 @@
 
 class Users::SessionsController < Devise::SessionsController
   respond_to :json
+  
+  def create
+    user = User.find_by(email: params[:user][:email])
 
+    if user && user.valid_password?(params[:user][:password])
+      sign_in user
+      token = request.env['warden-jwt_auth.token']
 
+      render json: {
+        status: { code: 200, message: 'User signed in successfully', data: user, access_token: token }
+      }, status: :ok
+    else
+      render json: {
+        status: { code: 401, message: 'Invalid credentials' }
+      }, status: :unauthorized
+    end
+  end
+  
   private
 
-  def respond_with(resource, options={})
-  token = request.env['warden-jwt_auth.token']
-  render json: {
-    status: {code: 200, message: 'User signed in succesfully',
-  data: current_user,
-  access_token: token}
-  }, 
-  status: :ok
-
-  end
-
+  # Sobrescribimos el método de respuesta cuando se destruye la sesión
   def respond_to_on_destroy
-      jwt_payload = JWT.decode(request.headers['Authorization'].split(' ')[1],
-      Rails.application.credentials.fetch(:secret_key_base)).first
-
-      current_user = User.find(jwt_payload['sub'])
-      if current_user
+    if request.headers['Authorization'].present?
+      jwt_token = request.headers['Authorization'].split(' ')[1]
+      
+      begin
+        jwt_payload = JWT.decode(jwt_token, Rails.application.credentials.fetch(:secret_key_base)).first
+        current_user = User.find_by(id: jwt_payload['sub'])
+  
+        if current_user
+          sign_out current_user 
+          render json: {
+            status: { code: 200, message: 'Signed out successfully' }
+          }, status: :ok
+        else
+          render json: {
+            status: { code: 401, message: 'User has no active session' }
+          }, status: :unauthorized
+        end
+      rescue JWT::DecodeError
         render json: {
-          status: 200,
-          message: "Signed out succesfully"
-        }, 
-        status: :ok
-      else
-        render json: {
-        status: 401,
-        message: "User has no active session"
-        },
-        status: :unauthorized
+          status: { code: 401, message: 'Invalid token' }
+        }, status: :unauthorized
       end
+    else
+      render json: {
+        status: { code: 401, message: 'Authorization header missing' }
+      }, status: :unauthorized
+    end
   end
 end

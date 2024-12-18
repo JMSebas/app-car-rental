@@ -7,9 +7,28 @@ class User < ApplicationRecord
          :jwt_authenticatable, jwt_revocation_strategy: self
 
   
+         validates :name, presence: true
+         validates :lastname, presence: true
+         validates :address, presence: true
+         validates :phone, presence: true
+         validates :birthdate, presence: true
+         validates :username, presence: true
+         validates :email, presence: true, uniqueness: true
+         validates :password, presence: true, length: { minimum: 6 }
+
+
+         enum role: {client: 0, administrador: 1, employee: 2}
+         has_many :reservations
+         has_many :rentals
 
   def jwt_payload
-    super
+    super.merge({
+      'email' => email,
+      'name' => name,
+      'lastname' => lastname,
+      'username' => username,
+      'role' => role
+    })
   end
 
 end

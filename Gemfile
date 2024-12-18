@@ -43,4 +43,20 @@ end
 gem 'devise'
 gem 'devise-jwt'
 gem 'letter_opener'
+gem 'swagger-blocks'
+gem 'cancancan'
+gem 'faker'
+gem 'sendgrid-ruby'
+gem "panko_serializer"
+
+gem 'dotenv-rails', groups: [:development, :test]
+
+group :test do 
+  gem 'rspec-rails'
+  gem 'factory_bot_rails'
+  gem 'database_cleaner-active_record'
+  gem 'shoulda-matchers'
+  
+end 
+
 
