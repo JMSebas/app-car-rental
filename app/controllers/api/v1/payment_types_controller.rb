@@ -7,14 +7,18 @@ module Api
 
            
             def index
-            @payment_types = PaymentType.all
-        
-            render json: @payment_types
+            payment_types = PaymentType.all
+            data = Panko::ArraySerializer.new(
+                payment_types,
+                each_serializer: PaymentSerializer
+            ).to_a
+            render json: data
             end
         
         
             def show
-            render json: @payment_type
+            data = PaymentSerializer.new.serialize(@payment_type)
+            render json: data
             end
         
            

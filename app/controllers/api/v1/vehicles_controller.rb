@@ -6,19 +6,27 @@ module Api
      
       
       def index 
-        @vehicles = filter_vehicles
+        @vehicles = Vehicle.all
         render json: @vehicles
       end
 
-      def available
-        @available_vehicles = Vehicle.available
-        render json: @available_vehicles
+      
+
+      def vehicles_available
+        available_vehicles = filter_vehicles
+        data = Panko::ArraySerializer.new(
+          available_vehicles,
+          each_serializer: VehicleSerializer
+        ).to_a
+
+        render json: data
       end
 
       
       def show
         render json: @vehicle
       end
+
 
       def create
         @vehicle = Vehicle.new(vehicle_params.merge(status: :available))
@@ -41,7 +49,7 @@ module Api
       end
 
       def destroy
-       render json: @vehicle.destroy
+       render json: @vehicle.destroy #, status: { message: 'Vehiculo eliminado con exito'}
         
       end
 
@@ -61,7 +69,11 @@ module Api
           :vehicle_type, 
           :status,
           :daily_rate,
-          :image
+          :image,
+          :chasis,
+          :motor,
+          :door_count,
+          :storage
         )
       end
 

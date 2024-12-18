@@ -47,6 +47,7 @@ gem 'swagger-blocks'
 gem 'cancancan'
 gem 'faker'
 gem 'sendgrid-ruby'
+gem "panko_serializer"
 
 gem 'dotenv-rails', groups: [:development, :test]
 

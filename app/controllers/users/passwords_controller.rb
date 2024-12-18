@@ -4,8 +4,22 @@ class Users::PasswordsController < Devise::PasswordsController
     
     
     def create
+
+      email = User.find_by(email: resource_params[:email])
+
+      if email.nil?
+        render json: {
+          status: {
+            code: 404,
+            message: "Email not registered in database"
+          }
+        }
+        return
+      end 
+
       self.resource = resource_class.send_reset_password_instructions(resource_params)
       
+
       if successfully_sent?(resource)
         render json: {
           status: { 

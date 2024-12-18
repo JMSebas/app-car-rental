@@ -12,9 +12,10 @@ class Invoice < ApplicationRecord
   private 
   def calculate_tax
     rate = rental.rate 
+    
     start_date = rental.actual_reservation_date
     end_date = rental.actual_refund_date
-    days_diff = (end_date - start_date).to_i
+    days_diff = (end_date - start_date ).to_i
 
     self.tax = days_diff * rate.value_per_day
   end

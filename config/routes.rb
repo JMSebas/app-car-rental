@@ -24,7 +24,7 @@ Rails.application.routes.draw do
       end
       
       resources :vehicles do
-        get :available, on: :collection
+        get :vehicles_available, on: :collection
       end
     end
   end

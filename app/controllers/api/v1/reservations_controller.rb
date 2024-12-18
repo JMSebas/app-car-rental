@@ -12,8 +12,11 @@ module Api
       end
 
       def reservations_user
-        @reservations = @current_user.reservations 
-        render json: @reservations
+        reservations = @current_user.reservations.includes(:vehicle, :user)
+        json =  Panko::ArraySerializer.new(
+          reservations, each_serializer: ReservationSerializer,
+        ).to_a
+        render json: json
       end 
 
      
@@ -21,6 +24,7 @@ module Api
         render json: @reservation
       end
 
+      
       def create
          @reservation = Reservation.new(reservation_params)
          @reservation.status_reservation =  :reserved
@@ -61,6 +65,8 @@ module Api
                  status: :unprocessable_entity
         end
       end
+
+      
 
 
      
