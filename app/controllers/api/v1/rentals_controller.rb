@@ -1,7 +1,7 @@
 module Api
   module V1
 class RentalsController < ApplicationController
-  before_action :set_rental, only: %i[ show update destroy ]
+  before_action :set_rental, only: %i[ show update destroy set_completed ]
   before_action :authenticate_user!
   load_and_authorize_resource
 
@@ -25,8 +25,8 @@ class RentalsController < ApplicationController
 
   
   def create
-    @rental = Rental.new(rental_params)
-
+    @rental = Rental.new(rental_params.merge(status: :in_process))
+    @rental.reservation.update!(status_reservation: :done)
     if @rental.save
       render json: @rental, status: :created
     else
@@ -39,7 +39,6 @@ class RentalsController < ApplicationController
     if @rental.update(rental_params.except(:damages))
       if params[:rental][:damages].present?
         params[:rental][:damages].each do |damage|
-          # Crear nuevo damage asociado al rental actual
           @rental.damages.create(
             damage_type: damage[:damage_type],
             value: damage[:value]
@@ -53,6 +52,20 @@ class RentalsController < ApplicationController
   end
   
 
+  def set_completed 
+    if @rental.status == "in_process"
+      render json: @rental.update!(status: :completed)
+      if @rental.damages.any?
+        vehicle =  @rental.reservation.vehicle
+        vehicle.update(status: :damaged)
+        Reparation.create(vehicle_id: vehicle.id, entry_day: Date.today, exit_day: Date.today + 1.month)
+      end
+     else 
+       render json: { error: 'Renta no está disponible para cancelarla' }, 
+       status: :unprocessable_entity
+     end 
+  
+    
 
   def destroy
     @rental.destroy!

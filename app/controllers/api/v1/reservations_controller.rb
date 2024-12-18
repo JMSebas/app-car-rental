@@ -1,7 +1,7 @@
 module Api
   module V1
     class ReservationsController < ApplicationController
-      before_action :set_reservation, only: %i[show update destroy set_completed]
+      before_action :set_reservation, only: %i[show update destroy set_cancelled]
       before_action :authenticate_user!
       load_and_authorize_resource
 
@@ -55,21 +55,18 @@ module Api
 
 
    
-      def set_completed
+      def set_cancelled
         if @reservation.status_reservation == "reserved"
-          @reservation.update!(status_reservation: :completed)
+          @reservation.update!(status_reservation: :cancelled)
           @reservation.vehicle.update!(status: :available)
           render json: @reservation, status: :ok
         else
-          render json: { error: 'Reserva no está en estado reservado para ser completada' }, 
+          render json: { error: 'Reserva no está disponible para cancelarla' }, 
                  status: :unprocessable_entity
         end
       end
 
       
-
-
-     
 
       private
 

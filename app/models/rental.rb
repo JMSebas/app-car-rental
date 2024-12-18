@@ -19,7 +19,8 @@ class Rental < ApplicationRecord
             presence: true
 
 
-  enum car_status: { good: 0 }
+  enum car_status: { good: 0, semi: 1 }
+  enum status: { in_process: 0, completed: 2}
 
   private 
 
