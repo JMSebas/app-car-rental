@@ -12,6 +12,12 @@ class RentalsController < ApplicationController
     render json: @rentals
   end
 
+  def rentals_user 
+      rentals = @current_user.rentals
+      render json: Panko::ArraySerializer.new(rentals, each_serializer: RentalSerializer).to_json
+  
+  end
+
   
   def show
     render json: RentalSerializer.new.serialize(@rental)
