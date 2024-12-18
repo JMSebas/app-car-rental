@@ -1,6 +1,4 @@
 Rails.application.routes.draw do
-  resources :damages
-  
   
   devise_for :users, controllers: {
     sessions: 'users/sessions',
@@ -11,11 +9,21 @@ Rails.application.routes.draw do
   namespace :api do 
     namespace :v1 do 
       resources :users
-      resources :invoices
+      resources :invoices do
+        collection do 
+          get :invoices_user
+        end 
+
+      end
       resources :payment_types
       resources :reparations
       resources :rates
-      resources :rentals
+      resources :rentals do
+        collection do 
+          get :rentals_user
+        end 
+
+      end 
       resources :seasons
       resources :reservations do
         collection do 

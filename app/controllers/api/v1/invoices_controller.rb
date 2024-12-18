@@ -15,6 +15,12 @@ module Api
         render json: @invoice
       end
 
+
+      def invoices_user
+        invoices = @current_user.invoices 
+        render json: Panko::ArraySerializer.new(invoices, each_serializer: InvoiceSerializer).to_json
+      end
+
      
       def create
         @invoice = Invoice.new(invoice_params)

@@ -1,3 +1,5 @@
+module Api
+  module V1
 class DamagesController < ApplicationController
   before_action :set_damage, only: %i[ show update destroy ]
 
@@ -48,4 +50,6 @@ class DamagesController < ApplicationController
     def damage_params
       params.require(:damage).permit(:damage_type, :value, :rental_id)
     end
+end
+end
 end
