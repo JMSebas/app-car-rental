@@ -1,0 +1,11 @@
+# app/views/devise/mailer/confirmation_instructions.html.erb
+<div>
+  <h2>Bienvenido <%= @resource.email %>!</h2>
+  <p>Por favor confirma tu cuenta haciendo clic en el siguiente enlace:</p>
+  <p>
+    <a href="http://tu-frontend.com/confirm?token=<%= @token %>" 
+       style="padding: 10px 15px; background-color: #4CAF50; color: white; text-decoration: none; border-radius: 5px;">
+      Confirmar mi cuenta
+    </a>
+  </p>
+</div>
