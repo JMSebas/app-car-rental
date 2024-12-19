@@ -54,12 +54,16 @@ class RentalsController < ApplicationController
 
   def set_completed 
     if @rental.status == "in_process"
-      render json: @rental.update!(status: :completed)
+      vehicle =  @rental.reservation.vehicle
       if @rental.damages.any?
-        vehicle =  @rental.reservation.vehicle
-        vehicle.update(status: :damaged)
+        vehicle.update!(status: :damaged)
         Reparation.create(vehicle_id: vehicle.id, entry_day: Date.today, exit_day: Date.today + 1.month)
+        render json: @rental.update!(status: :completed)
+      else
+        vehicle.update!(status: :available)
+        render json: @rental.update!(status: :completed)
       end
+
      else 
        render json: { error: 'Renta no está disponible para cancelarla' }, 
        status: :unprocessable_entity
