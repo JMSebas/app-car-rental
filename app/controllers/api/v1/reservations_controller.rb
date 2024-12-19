@@ -7,8 +7,11 @@ module Api
 
      
       def index
-        @reservations = Reservation.all
-        render json: @reservations
+        reservations = Reservation.all.includes(:vehicle, :user)
+        json =  Panko::ArraySerializer.new(
+          reservations, each_serializer: ReservationSerializer,
+        ).to_a
+        render json: json
       end
 
       def reservations_user
