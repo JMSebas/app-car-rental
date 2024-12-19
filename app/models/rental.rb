@@ -8,8 +8,7 @@ class Rental < ApplicationRecord
   has_one :invoice
   has_many :damages
   
-  validates :actual_refund_date,
-            :initial_odometer,
+  validates :initial_odometer,
             :final_odometer,
             presence: true
 
