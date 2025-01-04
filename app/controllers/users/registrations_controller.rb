@@ -3,13 +3,13 @@
 class Users::RegistrationsController < Devise::RegistrationsController
   respond_to :json
   before_action :configure_permitted_parameters, if: :devise_controller?
+  
 
   private
 
   def configure_permitted_parameters
     devise_parameter_sanitizer.permit(:sign_up, keys: [:name, :lastname, :address, :phone, :birthdate, :username, :email, :password, :role])
-    # Si necesitas permitir más parámetros para la actualización de la cuenta, descomenta la siguiente línea
-    # devise_parameter_sanitizer.permit(:account_update, keys: [:name, :lastname, :address, :phone, :birthdate, :username])
+
   end
 
   def respond_with(resource, options = {})

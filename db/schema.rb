@@ -10,9 +10,18 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2024_11_10_213746) do
+ActiveRecord::Schema[7.2].define(version: 2024_12_18_213729) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "damages", force: :cascade do |t|
+    t.string "damage_type"
+    t.decimal "value"
+    t.bigint "rental_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["rental_id"], name: "index_damages_on_rental_id"
+  end
 
   create_table "invoices", force: :cascade do |t|
     t.bigint "payment_type_id", null: false
@@ -22,6 +31,8 @@ ActiveRecord::Schema[7.2].define(version: 2024_11_10_213746) do
     t.bigint "rental_id", null: false
     t.date "payment_day"
     t.date "actual_payment_day"
+    t.decimal "amountxDamaged"
+    t.decimal "totalAmount"
     t.index ["payment_type_id"], name: "index_invoices_on_payment_type_id"
     t.index ["rental_id"], name: "index_invoices_on_rental_id"
   end
@@ -47,12 +58,13 @@ ActiveRecord::Schema[7.2].define(version: 2024_11_10_213746) do
     t.date "actual_reservation_date"
     t.date "expected_refund_date"
     t.date "actual_refund_date"
-    t.string "car_status"
+    t.integer "car_status"
     t.decimal "initial_odometer"
     t.decimal "final_odometer"
     t.bigint "rate_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "status"
     t.index ["rate_id"], name: "index_rentals_on_rate_id"
     t.index ["reservation_id"], name: "index_rentals_on_reservation_id"
     t.index ["user_id"], name: "index_rentals_on_user_id"
@@ -74,7 +86,7 @@ ActiveRecord::Schema[7.2].define(version: 2024_11_10_213746) do
     t.date "refund_date"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.string "status_reservation", default: "in_reserved"
+    t.integer "status_reservation", default: 0
     t.index ["user_id"], name: "index_reservations_on_user_id"
     t.index ["vehicle_id"], name: "index_reservations_on_vehicle_id"
   end
@@ -103,6 +115,11 @@ ActiveRecord::Schema[7.2].define(version: 2024_11_10_213746) do
     t.date "birthdate"
     t.string "username"
     t.integer "role", default: 0, null: false
+    t.string "confirmation_token"
+    t.datetime "confirmed_at"
+    t.datetime "confirmation_sent_at"
+    t.string "unconfirmed_email"
+    t.index ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["jti"], name: "index_users_on_jti", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
@@ -114,12 +131,18 @@ ActiveRecord::Schema[7.2].define(version: 2024_11_10_213746) do
     t.string "license_plate"
     t.integer "year"
     t.string "vehicle_type"
-    t.string "status"
+    t.integer "status"
     t.decimal "daily_rate"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "image"
+    t.string "motor"
+    t.integer "door_count"
+    t.string "chasis"
+    t.integer "storage"
   end
 
+  add_foreign_key "damages", "rentals"
   add_foreign_key "invoices", "payment_types"
   add_foreign_key "invoices", "rentals"
   add_foreign_key "rates", "seasons"
