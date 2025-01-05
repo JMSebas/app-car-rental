@@ -7,11 +7,12 @@
 
 Rails.application.config.middleware.insert_before 0, Rack::Cors do
   allow do
-    origins "*"
+    origins 'http://localhost:3001' # Tu URL del frontend
 
-    resource "*",
+    resource '*',
       headers: :any,
       methods: [:get, :post, :put, :patch, :delete, :options, :head],
-      expose: ["Authorization"]
+      credentials: true, # Esto es importante para las cookies
+      expose: ['Authorization']
   end
 end
