@@ -2,20 +2,26 @@ module Api
     module V1
         class PaymentTypesController < ApplicationController
             before_action :set_payment_type, only: %i[ show update destroy ]
-        
-            # GET /payment_types
+            before_action :authenticate_user!
+            load_and_authorize_resource
+
+           
             def index
-            @payment_types = PaymentType.all
-        
-            render json: @payment_types
+            payment_types = PaymentType.all
+            data = Panko::ArraySerializer.new(
+                payment_types,
+                each_serializer: PaymentSerializer
+            ).to_a
+            render json: data
             end
         
-            # GET /payment_types/1
+        
             def show
-            render json: @payment_type
+            data = PaymentSerializer.new.serialize(@payment_type)
+            render json: data
             end
         
-            # POST /payment_types
+           
             def create
             @payment_type = PaymentType.new(payment_type_params)
         
@@ -26,7 +32,7 @@ module Api
             end
             end
         
-            # PATCH/PUT /payment_types/1
+           
             def update
             if @payment_type.update(payment_type_params)
                 render json: @payment_type
@@ -35,7 +41,7 @@ module Api
             end
             end
         
-            # DELETE /payment_types/1
+          
             def destroy
             @payment_type.destroy!
             end

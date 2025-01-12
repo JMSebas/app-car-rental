@@ -2,23 +2,34 @@ module Api
   module V1
     class VehiclesController < ApplicationController
       before_action :set_vehicle, only: [:show, :update, :destroy]
-      # GET /api/v1/vehicles
-      def index
-        @vehicles = filter_vehicles
+      load_and_authorize_resource
+     
+      
+      def index 
+        @vehicles = Vehicle.all
         render json: @vehicles
       end
 
-      def available
-        @available_vehicles = Vehicle.available
-        render json: @available_vehicles
+      
+
+      def vehicles_available
+        available_vehicles = filter_vehicles
+        data = Panko::ArraySerializer.new(
+          available_vehicles,
+          each_serializer: VehicleSerializer
+        ).to_a
+
+        render json: data
       end
-      # GET /api/v1/vehicles/1
+
+      
       def show
         render json: @vehicle
       end
-      # POST /api/v1/vehicles
+
+
       def create
-        @vehicle = Vehicle.new(vehicle_params)
+        @vehicle = Vehicle.new(vehicle_params.merge(status: :available))
         
         if @vehicle.save
           render json: @vehicle, status: :created
@@ -27,7 +38,7 @@ module Api
                  status: :unprocessable_entity
         end
       end
-      # PATCH/PUT /api/v1/vehicles/1
+
       def update
         if @vehicle.update(vehicle_params)
           render json: @vehicle
@@ -36,17 +47,19 @@ module Api
                  status: :unprocessable_entity
         end
       end
-      # DELETE /api/v1/vehicles/1
+
       def destroy
-        @vehicle.destroy
-        head :no_content
+       render json: @vehicle.destroy #, status: { message: 'Vehiculo eliminado con exito'}
+        
       end
+
       private
       def set_vehicle
         @vehicle = Vehicle.find(params[:id])
       rescue ActiveRecord::RecordNotFound
         render json: { error: 'Vehículo no encontrado' }, status: :not_found
       end
+
       def vehicle_params
         params.require(:vehicle).permit(
           :brand, 
@@ -54,21 +67,25 @@ module Api
           :license_plate, 
           :year, 
           :vehicle_type, 
-          :status, 
-          :daily_rate
+          :status,
+          :daily_rate,
+          :image,
+          :chasis,
+          :motor,
+          :door_count,
+          :storage
         )
       end
+
       def filter_vehicles
-        vehicles = Vehicle.all
+        vehicles = Vehicle.all.available
         vehicles = vehicles.where(brand: params[:brands]) if params[:brands].present?
         vehicles = vehicles.where(model: params[:models]) if params[:models].present?
         vehicles = vehicles.where(year: params[:years]) if params[:years].present?
         vehicles = vehicles.where(vehicle_type: params[:types]) if params[:types].present?
-        vehicles = vehicles.where(status: params[:status]) if params[:status].present?
         if params[:min_price].present? && params[:max_price].present?
           vehicles = vehicles.where(daily_rate: params[:min_price]..params[:max_price])
         end
-        # Paginación (opcional, usando la gema 'kaminari' si la tienes instalada)
         vehicles = vehicles.page(params[:page]).per(params[:per_page]) if params[:page].present?
         vehicles
       end

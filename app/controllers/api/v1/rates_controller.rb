@@ -2,20 +2,21 @@ module Api
   module V1
     class RatesController < ApplicationController
       before_action :set_rate, only: %i[ show update destroy ]
-
-      # GET /rates
+      before_action :authenticate_user!
+      load_and_authorize_resource
+   
       def index
         @rates = Rate.all
 
         render json: @rates
       end
 
-      # GET /rates/1
+
       def show
         render json: @rate
       end
 
-      # POST /rates
+      
       def create
         @rate = Rate.new(rate_params)
 
@@ -26,7 +27,7 @@ module Api
         end
       end
 
-      # PATCH/PUT /rates/1
+      
       def update
         if @rate.update(rate_params)
           render json: @rate
@@ -35,7 +36,7 @@ module Api
         end
       end
 
-      # DELETE /rates/1
+    
       def destroy
         @rate.destroy!
       end
@@ -45,7 +46,6 @@ module Api
           @rate = Rate.find(params[:id])
         end
 
-        # Only allow a list of trusted parameters through.
         def rate_params
           params.require(:rate).permit(:car_type, :value_per_day, :season_id)
         end

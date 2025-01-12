@@ -1,27 +1,41 @@
 Rails.application.routes.draw do
   
-  
   devise_for :users, controllers: {
     sessions: 'users/sessions',
     registrations: 'users/registrations',
-    passwords: 'users/passwords'
+    passwords: 'users/passwords',
+    confirmations: 'users/confirmations'
   }
 
   namespace :api do 
     namespace :v1 do 
       resources :users
-      resources :invoices
+      resources :invoices do
+        collection do 
+          get :invoices_user
+        end 
+
+      end
       resources :payment_types
       resources :reparations
       resources :rates
-      resources :rentals
+      resources :rentals do
+        collection do 
+          get :rentals_user
+          patch :set_completed
+        end 
+
+      end 
       resources :seasons
       resources :reservations do
-        patch 'set_completed', on: :member
+        collection do 
+        patch :set_cancelled
+        get :reservations_user
+        end
       end
       
       resources :vehicles do
-        get :available, on: :collection
+        get :vehicles_available, on: :collection
       end
     end
   end

@@ -1,14 +1,29 @@
 # app/controllers/users/passwords_controller.rb
 class Users::PasswordsController < Devise::PasswordsController
     respond_to :json
-    #skip_before_action :verify_authenticity_token
+    
     
     def create
+
+      email = User.find_by(email: resource_params[:email])
+
+      if email.nil?
+        render json: {
+          status: {
+            code: 404,
+            message: "Email not registered in database"
+          }
+        }
+        return
+      end 
+
       self.resource = resource_class.send_reset_password_instructions(resource_params)
       
+
       if successfully_sent?(resource)
         render json: {
           status: { 
+            # data: resource
             code: 200, 
             message: 'Reset password instructions have been sent to your email'
           }

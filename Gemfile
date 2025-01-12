@@ -44,17 +44,19 @@ gem 'devise'
 gem 'devise-jwt'
 gem 'letter_opener'
 gem 'swagger-blocks'
-gem 'rubocop', require: false
+gem 'cancancan'
+gem 'faker'
+gem 'rack-cors'
+gem 'sendgrid-ruby'
+gem "panko_serializer"
+
+gem 'dotenv-rails', groups: [:development, :test]
 
 group :test do 
   gem 'rspec-rails'
   gem 'factory_bot_rails'
   gem 'database_cleaner-active_record'
   gem 'shoulda-matchers'
-  
-  gem 'capybara'
-  gem 'selenium-webdriver'
-  gem 'webdrivers'
   
 end 
 
