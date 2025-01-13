@@ -13,6 +13,7 @@ class Ability
 
     if user.role == "client"
       can [:reservations_user, :create, :destroy, :update], Reservation
+      can :manage, Invoice
       can [:read, :available], Vehicle
     end
 
